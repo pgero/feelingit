@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 to HTML</title>
+  <script>
+    // Parse the URL to get the 'data' parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const base64Data = urlParams.get('data');
+
+    // Decode Base64 to HTML
+    function decodeBase64ToHTML(base64) {
+      if (base64) {
+        const decodedHTML = atob(base64);
+        return decodedHTML;
+      }
+      return "No data provided";
+    }
+
+    // Render the HTML on the page
+    function renderHTML(decodedHTML) {
+      document.getElementById("content").innerHTML = decodedHTML;
+    }
+
+    // Run the functions
+    window.onload = () => {
+      const decodedHTML = decodeBase64ToHTML(base64Data);
+      renderHTML(decodedHTML);
+    };
+  </script>
+</head>
+<body>
+  <div id="content"></div>
+</body>
+</html>
