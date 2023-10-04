@@ -4,32 +4,43 @@
   <meta charset="UTF-8">
   <title>Base64 to HTML</title>
   <script>
-    // Parse the URL to get the 'data' parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const base64Data = urlParams.get('data');
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const base64Data = urlParams.get('data');
+      const textarea = document.getElementById('base64data');
+      const iframe = document.getElementById('iframe').contentWindow.document;
 
-    // Decode Base64 to HTML
-    function decodeBase64ToHTML(base64) {
-      if (base64) {
-        const decodedHTML = atob(base64);
-        return decodedHTML;
+      // Initialize textarea with URL parameter
+      if (base64Data) {
+        textarea.value = base64Data;
+        renderHTML(base64Data);
       }
-      return "No data provided";
-    }
 
-    // Render the HTML on the page
-    function renderHTML(decodedHTML) {
-      document.getElementById("content").innerHTML = decodedHTML;
-    }
+      // Event listener for textarea changes
+      textarea.addEventListener('input', () => {
+        renderHTML(textarea.value);
+      });
 
-    // Run the functions
-    window.onload = () => {
-      const decodedHTML = decodeBase64ToHTML(base64Data);
-      renderHTML(decodedHTML);
-    };
+      // Function to decode Base64 and render HTML
+      function renderHTML(base64) {
+        try {
+          const decodedHTML = atob(base64);
+          iframe.open();
+          iframe.write(decodedHTML);
+          iframe.close();
+        } catch (e) {
+          iframe.open();
+          iframe.write("Invalid Base64 Data");
+          iframe.close();
+        }
+      }
+    });
   </script>
 </head>
 <body>
-  <div id="content"></div>
+  <form>
+    <textarea id="base64data" rows="4" cols="50"></textarea>
+  </form>
+  <iframe id="iframe"></iframe>
 </body>
 </html>
