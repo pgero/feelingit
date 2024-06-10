@@ -5,20 +5,26 @@
   <title>FeelingIt - Dynamic Template Filling</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui/dist/full.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('markdown-form');
+      const urlParams = new URLSearchParams(window.location.search);
+      const templateParam = urlParams.get('template');
+      const markdownUrlInput = document.getElementById('markdown-url');
       
+      markdownUrlInput.value = templateParam || 'template_example.md';
+
       form.addEventListener('submit', event => {
         event.preventDefault();
         
-        const markdownUrl = document.getElementById('markdown-url').value;
-        const urlParams = new URLSearchParams(window.location.search);
+        const markdownUrl = markdownUrlInput.value;
         const params = Object.fromEntries(urlParams.entries());
         
+        // Determine if the URL is local or external
+        const fetchUrl = markdownUrl.startsWith('http') ? markdownUrl : `./${markdownUrl}`;
+        
         // Fetch the Markdown file from the provided URL
-        fetch(markdownUrl)
+        fetch(fetchUrl)
           .then(response => response.text())
           .then(markdown => {
             // Replace placeholders with URL parameters
@@ -50,18 +56,6 @@
           console.error('Failed to copy: ', err);
         });
       });
-
-      document.getElementById('export-pdf-button').addEventListener('click', () => {
-        const iframe = document.getElementById('iframe').contentWindow.document;
-        const htmlContent = iframe.body.innerHTML;
-        
-        const element = document.createElement('div');
-        element.innerHTML = htmlContent;
-        
-        html2pdf()
-          .from(element)
-          .save();
-      });
     });
   </script>
 </head>
@@ -81,9 +75,7 @@
     <iframe id="iframe" class="w-full h-96 border border-gray-300 rounded mb-4"></iframe>
     <div class="flex space-x-4">
       <button id="copy-button" class="btn btn-secondary">Copy HTML to Clipboard</button>
-      <button id="export-pdf-button" class="btn btn-accent">Export to PDF</button>
     </div>
   </div>
 </body>
 </html>
-  
