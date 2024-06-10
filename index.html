@@ -5,59 +5,84 @@
   <title>FeelingIt - Dynamic Template Filling</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui/dist/full.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('markdown-form');
-      const urlParams = new URLSearchParams(window.location.search);
-      const templateParam = urlParams.get('template');
-      const markdownUrlInput = document.getElementById('markdown-url');
-      
-      markdownUrlInput.value = templateParam || 'template_example.md';
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('markdown-form');
+    const urlParams = new URLSearchParams(window.location.search);
+    const templateParam = urlParams.get('template');
+    const markdownUrlInput = document.getElementById('markdown-url');
 
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        
-        const markdownUrl = markdownUrlInput.value;
+    markdownUrlInput.value = templateParam || 'template_example.md';
+
+    // Create a custom Showdown extension for template filling
+    const templateExtension = {
+      type: 'lang',
+      filter: function(text, converter, options) {
         const params = Object.fromEntries(urlParams.entries());
-        
-        // Determine if the URL is local or external
-        const fetchUrl = markdownUrl.startsWith('http') ? markdownUrl : `./${markdownUrl}`;
-        
-        // Fetch the Markdown file from the provided URL
-        fetch(fetchUrl)
-          .then(response => response.text())
-          .then(markdown => {
-            // Replace placeholders with URL parameters
-            Object.keys(params).forEach(key => {
-              const regex = new RegExp(`{{${key}}}`, 'g');
-              markdown = markdown.replace(regex, params[key]);
-            });
-
-            renderMarkdown(markdown);
-          });
-      });
-
-      function renderMarkdown(markdown) {
-        const converter = new showdown.Converter();
-        const html = converter.makeHtml(markdown);
-        const iframe = document.getElementById('iframe').contentWindow.document;
-        iframe.open();
-        iframe.write(html);
-        iframe.close();
-      }
-
-      document.getElementById('copy-button').addEventListener('click', () => {
-        const iframe = document.getElementById('iframe').contentWindow.document;
-        const htmlContent = iframe.body.innerHTML;
-        
-        navigator.clipboard.writeText(htmlContent).then(() => {
-          alert('Copied to clipboard');
-        }).catch(err => {
-          console.error('Failed to copy: ', err);
+        Object.keys(params).forEach(key => {
+          const regex = new RegExp(`{{${key}}}`, 'g');
+          text = text.replace(regex, params[key]);
         });
-      });
+        return text;
+      }
+    };
+
+    // Create a Showdown converter with the custom extension
+    const converter = new showdown.Converter({
+      extensions: [templateExtension]
     });
-  </script>
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      const markdownUrl = markdownUrlInput.value;
+
+      // Parse the markdownUrl using the URL constructor
+      const url = new URL(markdownUrl, window.location.href);
+
+      // Check if the URL is local or external
+      const fetchUrl = url.origin === window.location.origin ? url.href : markdownUrl;
+
+      // Fetch the Markdown file from the provided URL
+      fetch(fetchUrl)
+        .then(response => response.text())
+        .then(markdown => {
+          renderMarkdown(markdown);
+        })
+        .catch(error => {
+          console.error('Error fetching Markdown file:', error);
+          // Display an error message to the user
+          const iframe = document.getElementById('iframe').contentWindow.document;
+          iframe.open();
+          iframe.write('<p>Failed to load the Markdown file.</p>');
+          iframe.close();
+        });
+    });
+
+    function renderMarkdown(markdown) {
+      const html = converter.makeHtml(markdown);
+      const iframe = document.getElementById('iframe').contentWindow.document;
+      iframe.open();
+      iframe.write(html);
+      iframe.close();
+    }
+
+    document.getElementById('copy-button').addEventListener('click', () => {
+      const iframe = document.getElementById('iframe').contentWindow.document;
+      const htmlContent = iframe.body.innerHTML;
+
+      navigator.clipboard.writeText(htmlContent)
+        .then(() => {
+          alert('Copied to clipboard');
+        })
+        .catch(err => {
+          console.error('Failed to copy:', err);
+          // Display an error message to the user
+          alert('Failed to copy the HTML content.');
+        });
+    });
+  });
+</script>
 </head>
 <body class="font-sans antialiased bg-gray-100 text-gray-800">
   <div class="container mx-auto p-8">
