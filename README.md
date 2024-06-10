@@ -1,63 +1,18 @@
-# Intuit - URL to HTML Renderer
+# FeelingIt
 
-## Overview
-
-Intuit is a minimalist web tool that decodes and renders HTML content passed as a URL parameter. Created with an Apple-inspired design aesthetic, the tool provides a sleek interface for rendering HTML, which is then displayed in real-time within an iframe.
+**FeelingIt** is a dynamic template filling and rendering tool that allows users to easily load Markdown files, replace placeholders with URL parameters, and render the content as HTML. This tool also provides functionality to copy the rendered HTML to the clipboard and export it to a PDF file.
 
 ## Features
 
-- Render HTML content from URL parameters.
-- Real-time rendering of HTML within an iframe.
-- Clean and user-friendly interface for ease of use.
+- **Dynamic Templating**: Load Markdown files from a URL and replace placeholders (e.g., `{{name}}`, `{{topic}}`) with URL parameters.
+- **Real-Time Rendering**: Render the processed Markdown content in real-time within an iframe.
+- **Copy to Clipboard**: Copy the rendered HTML content directly to your clipboard for easy sharing and integration.
+- **Export to PDF**: Convert and save the rendered HTML content as a PDF file with a single click.
+- **Responsive Design**: Built with DaisyUI for a clean, responsive, and user-friendly interface.
 
-## Use Cases
+## Usage
 
-### Web Development
-
-- Simplify the process of embedding HTML into web applications.
-- Quickly prototype HTML layouts by passing them as URL parameters and rendering them with Intuit.
-
-### Data Transmission
-
-- Enable the secure transfer of HTML content over the network by passing it as URL parameters.
-  
-### Debugging and Testing
-
-- Test HTML code snippets easily by passing them as URL parameters and observing the output in real-time.
-- Debug HTML content that's not rendering as expected.
-
-## How to Use
-
-1. Navigate to [Intuit](https://franklinbaldo.github.io/intuit/).
-2. Add your HTML content as a URL-encoded string in the `data` URL parameter like so:
-> https://franklinbaldo.github.io/intuit/?data=%3Ch1%3EHello%20World%3C/h1%3E
-
-## Installation
-
-If you'd like to run Intuit locally:
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/franklinbaldo/intuit.git
-    cd intuit
-    ```
-
-2. Open `index.html` in your web browser.
-
-## Technology Stack
-
-- HTML5
-- JavaScript
-- Tailwind CSS
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome. Feel free to check the [issues page](https://github.com/franklinbaldo/intuit/issues) if you want to contribute.
-
-## Author
-
-Franklin Silveira Baldo - [Github](https://github.com/franklinbaldo)
+1. **Load Template**: Enter the URL of your Markdown file in the input field and click "Load Template".
+2. **Render Content**: The tool will fetch the Markdown file, replace the placeholders with the provided URL parameters, and render the HTML content.
+3. **Copy HTML**: Click "Copy HTML to Clipboard" to copy the rendered HTML content to your clipboard.
+4. **Export PDF**: Click "Export to PDF" to download the rendered HTML content as a PDF file.
