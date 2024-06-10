@@ -2,43 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>URL to HTML</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <title>FeelingIt - Dynamic Template Filling</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui/dist/full.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const htmlData = urlParams.get('data');
-      const iframe = document.getElementById('iframe').contentWindow.document;
+      const form = document.getElementById('markdown-form');
+      
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        
+        const markdownUrl = document.getElementById('markdown-url').value;
+        const urlParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlParams.entries());
+        
+        // Fetch the Markdown file from the provided URL
+        fetch(markdownUrl)
+          .then(response => response.text())
+          .then(markdown => {
+            // Replace placeholders with URL parameters
+            Object.keys(params).forEach(key => {
+              const regex = new RegExp(`{{${key}}}`, 'g');
+              markdown = markdown.replace(regex, params[key]);
+            });
 
-      if (htmlData) {
-        renderHTML(htmlData);
-      }
+            renderMarkdown(markdown);
+          });
+      });
 
-      function renderHTML(html) {
+      function renderMarkdown(markdown) {
+        const converter = new showdown.Converter();
+        const html = converter.makeHtml(markdown);
+        const iframe = document.getElementById('iframe').contentWindow.document;
         iframe.open();
         iframe.write(html);
         iframe.close();
       }
-    });
 
-    function htmz(frame) {
-      setTimeout(() => {
-        const hash = frame.contentWindow.location.hash;
-        if (hash) {
-          const element = frame.contentDocument.querySelector(hash);
-          if (element) {
-            element.replaceWith(...frame.contentDocument.body.childNodes);
-          }
-        }
-      }, 0);
-    }
+      document.getElementById('copy-button').addEventListener('click', () => {
+        const iframe = document.getElementById('iframe').contentWindow.document;
+        const htmlContent = iframe.body.innerHTML;
+        
+        navigator.clipboard.writeText(htmlContent).then(() => {
+          alert('Copied to clipboard');
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+      });
+
+      document.getElementById('export-pdf-button').addEventListener('click', () => {
+        const iframe = document.getElementById('iframe').contentWindow.document;
+        const htmlContent = iframe.body.innerHTML;
+        
+        const element = document.createElement('div');
+        element.innerHTML = htmlContent;
+        
+        html2pdf()
+          .from(element)
+          .save();
+      });
+    });
   </script>
 </head>
 <body class="font-sans antialiased bg-gray-100 text-gray-800">
   <div class="container mx-auto p-8">
-    <h1 class="text-3xl font-bold mb-4">URL to HTML</h1>
-    <p class="mb-4">Rendered HTML:</p>
-    <iframe id="iframe" name="htmz" class="w-full h-96 border border-gray-300 rounded" onload="htmz(this)"></iframe>
+    <h1 class="text-3xl font-bold mb-4">FeelingIt - Dynamic Template Filling</h1>
+    <form id="markdown-form" class="mb-4">
+      <div class="form-control">
+        <label for="markdown-url" class="label">
+          <span class="label-text">Markdown File URL:</span>
+        </label>
+        <input type="url" id="markdown-url" class="input input-bordered w-full" required>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Load Template</button>
+    </form>
+    <p class="mb-4">Rendered Template:</p>
+    <iframe id="iframe" class="w-full h-96 border border-gray-300 rounded mb-4"></iframe>
+    <div class="flex space-x-4">
+      <button id="copy-button" class="btn btn-secondary">Copy HTML to Clipboard</button>
+      <button id="export-pdf-button" class="btn btn-accent">Export to PDF</button>
+    </div>
   </div>
 </body>
 </html>
+  
