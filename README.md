@@ -1,6 +1,8 @@
 # FeelingIt
 
 **FeelingIt** is a dynamic template filling and rendering tool that allows users to easily load Markdown files, replace placeholders with URL parameters, and render the content as HTML. This tool also provides functionality to copy the rendered HTML to the clipboard and export it to a PDF file.
+## Demo
+https://pgero.github.io/feelingit/
 
 ## Features
 
