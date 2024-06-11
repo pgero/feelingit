@@ -1,99 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>FeelingIt - Dynamic Template Filling</title>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui/dist/full.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/nunjucks/browser/nunjucks.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('markdown-form');
-      const urlParams = new URLSearchParams(window.location.search);
-      const templateParam = urlParams.get('template');
-      const markdownUrlInput = document.getElementById('markdown-url');
-
-      markdownUrlInput.value = templateParam || 'template_example.md';
-
-      // Create a Showdown converter
-      const converter = new showdown.Converter();
-
-      // Function to fetch and render the template
-      function fetchAndRenderTemplate(markdownUrl) {
-        // Use the path relative to the current domain
-        const fetchUrl = markdownUrl;
-
-        // Fetch the Markdown file from the provided URL
-        fetch(fetchUrl)
-          .then(response => response.text())
-          .then(template => {
-            const params = Object.fromEntries(urlParams.entries());
-            const markdown = nunjucks.renderString(template, params);
-            renderMarkdown(markdown);
-          })
-          .catch(error => {
-            console.error('Error fetching Markdown file:', error);
-            // Display an error message to the user
-            const iframe = document.getElementById('iframe').contentWindow.document;
-            iframe.open();
-            iframe.write('<p>Failed to load the Markdown file.</p>');
-            iframe.close();
-          });
+  <head>
+    <meta charset="UTF-8" />
+    <title>FeelingIt - Dynamic Template Filling</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+    />
+    <style>
+      body {
+        background-color: #1a202c;
+        color: #e2e8f0;
       }
-
-      // Load the template file on page load
-      fetchAndRenderTemplate(markdownUrlInput.value);
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        const markdownUrl = markdownUrlInput.value;
-        urlParams.set('template', markdownUrl);
-        history.replaceState(null, '', '?' + urlParams.toString());
-        fetchAndRenderTemplate(markdownUrl);
-      });
-
-      function renderMarkdown(markdown) {
-        const html = converter.makeHtml(markdown);
-        const iframe = document.getElementById('iframe').contentWindow.document;
-        iframe.open();
-        iframe.write(html);
-        iframe.close();
+      iframe {
+        background-color: #ffffff;
+        color: #000000;
       }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.3/browser/nunjucks.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
+    <iframe
+      hidden
+      name="htmz"
+      onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"
+    ></iframe>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("template-form");
+        const urlParams = new URLSearchParams(window.location.search);
+        const templateParam = urlParams.get("template");
+        const templateUrlInput = document.getElementById("template-url");
 
-      document.getElementById('copy-button').addEventListener('click', () => {
-        const iframe = document.getElementById('iframe').contentWindow.document;
-        const htmlContent = iframe.body.innerHTML;
+        templateUrlInput.value = templateParam || "template_example.md";
 
-        navigator.clipboard.writeText(htmlContent)
-          .then(() => {
-            alert('Copied to clipboard');
-          })
-          .catch(err => {
-            console.error('Failed to copy:', err);
-            // Display an error message to the user
-            alert('Failed to copy the HTML content.');
+        // Create a Showdown converter
+        const converter = new showdown.Converter();
+
+        // Configure Nunjucks
+        const nunjucksEnv = new nunjucks.Environment();
+
+        // Function to fetch and render the template
+        function fetchAndRenderTemplate(markdownUrl) {
+          // Parse the markdownUrl using the URL constructor
+          const url = new URL(markdownUrl, window.location.href);
+
+          // Check if the URL is local or external
+          const fetchUrl =
+            url.origin === window.location.origin ? url.href : markdownUrl;
+
+          // Fetch the Markdown file from the provided URL
+          fetch(fetchUrl)
+            .then((response) => response.text())
+            .then((template) => {
+              const params = Object.fromEntries(urlParams.entries());
+              const markdown = nunjucksEnv.renderString(template, params);
+              renderMarkdown(markdown);
+            })
+            .catch((error) => {
+              console.error("Error fetching Markdown file:", error);
+              // Display an error message to the user
+              const iframe =
+                document.getElementById("iframe").contentWindow.document;
+              iframe.open();
+              iframe.write("<p>Failed to load the Markdown file.</p>");
+              iframe.close();
+            });
+        }
+
+        // Update URL parameter when input value changes
+        templateUrlInput.addEventListener("input", () => {
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.set("template", templateUrlInput.value);
+          window.history.replaceState({}, "", newUrl);
+        });
+
+        // Load the template file on page load
+        fetchAndRenderTemplate(templateUrlInput.value);
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          fetchAndRenderTemplate(templateUrlInput.value);
+        });
+
+        function renderMarkdown(markdown) {
+          const html = converter.makeHtml(markdown);
+          const iframe =
+            document.getElementById("iframe").contentWindow.document;
+          iframe.open();
+          iframe.write(`
+    <html>
+      <head>
+        <style>
+          body {
+            font-family: Times New Roman, serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          h1 {
+            text-align: center;
+            margin-bottom: 30px;
+          }
+          p {
+            text-align: justify;
+          }
+          blockquote {
+            margin-top: 40px;
+            text-align: right;
+          }
+        </style>
+      </head>
+      <body>
+        ${html}
+      </body>
+    </html>
+  `);
+          iframe.close();
+        }
+
+        document.getElementById("copy-button").addEventListener("click", () => {
+          const iframe =
+            document.getElementById("iframe").contentWindow.document;
+          const htmlContent = iframe.body.innerHTML;
+
+          navigator.clipboard
+            .writeText(htmlContent)
+            .then(() => {
+              alert("Copied to clipboard");
+            })
+            .catch((err) => {
+              console.error("Failed to copy:", err);
+              // Display an error message to the user
+              alert("Failed to copy the HTML content.");
+            });
+        });
+        document
+          .getElementById("open-new-window-button")
+          .addEventListener("click", () => {
+            const iframe = document.getElementById("iframe");
+            const iframeContent =
+              iframe.contentWindow.document.documentElement.outerHTML;
+
+            const newWindow = window.open("", "_blank");
+            newWindow.document.open();
+            newWindow.document.write(iframeContent);
+            newWindow.document.close();
+          });
+        document
+          .getElementById("export-pdf-button")
+          .addEventListener("click", () => {
+            const iframe = document.getElementById("iframe");
+            const opt = {
+              margin: 1,
+              filename: "rendered_template.pdf",
+              image: { type: "jpeg", quality: 0.98 },
+              html2canvas: { scale: 2 },
+              jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+            };
+
+            html2pdf().set(opt).from(iframe).save();
           });
       });
-    });
-  </script>
-</head>
-<body class="bg-base-200 text-base-content">
-  <div class="container mx-auto p-8">
-    <h1 class="text-3xl font-bold mb-4">FeelingIt - Dynamic Template Filling</h1>
-    <form id="markdown-form" class="mb-4">
-      <div class="form-control">
-        <label for="markdown-url" class="label">
-          <span class="label-text">Markdown File URL:</span>
-        </label>
-        <input type="text" id="markdown-url" class="input input-bordered w-full" required>
+    </script>
+  </head>
+  <body>
+    <div class="ui container">
+      <h1 class="ui header inverted" style="margin-top: 2rem">
+        FeelingIt - Dynamic Template Filling
+      </h1>
+      <form id="template-form" class="ui form inverted segment">
+        <div class="field">
+          <label for="template-url">Template File URL:</label>
+          <input type="text" id="template-url" required />
+        </div>
+        <button type="submit" class="ui button primary">Load Template</button>
+      </form>
+      <p style="margin-top: 2rem">Rendered Template:</p>
+      <iframe
+        id="iframe"
+        class="ui segment"
+        style="width: 100%; height: 600px; border: none"
+        name="htmz"
+      ></iframe>
+      <div class="ui buttons" style="margin-top: 2rem">
+        <button id="copy-button" class="ui button pink">
+          Copy HTML to Clipboard
+        </button>
+        <button id="export-pdf-button" class="ui button green">
+          Export to PDF
+        </button>
+        <button id="open-new-window-button" class="ui button blue">
+          Open in New Window
+        </button>
       </div>
-      <button type="submit" class="btn btn-primary mt-3">Load Template</button>
-    </form>
-    <p class="mb-4">Rendered Template:</p>
-    <iframe id="iframe" class="w-full h-96 border border-gray-300 rounded mb-4"></iframe>
-    <div class="flex space-x-4">
-      <button id="copy-button" class="btn btn-secondary">Copy HTML to Clipboard</button>
     </div>
-  </div>
-</body>
+  </body>
 </html>
