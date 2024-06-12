@@ -1,4 +1,6 @@
-# ![Logotipo da PGE-RO](logo_pge.png =200x)
+<p align="center">
+  <img src="logo_pge.png" alt="Logotipo da PGE-RO" width="200">
+</p>
 
 **JUÍZO DA VARA FEDERAL CÍVEL (FAZENDA PÚBLICA) DA SEÇÃO JUDICIÁRIA DO ESTADO DE RONDÔNIA**
 
