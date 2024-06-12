@@ -13,7 +13,7 @@ A tutela antecipada foi deferida, para obrigar os demandados a fornecer o fárma
 > {{trecho_da_decisao_original}}
 > (Destaques originais)
 
-Em razão do descumprimento, houve **bloqueio de valores, unicamente, em face do Ente Estadual, no valor total de R$ {{valor_bloqueado}}**, para imediato atendimento da demanda judicial.
+Em razão do descumprimento, houve **bloqueio de valores, unicamente, em face do Ente Estadual**, no valor total de R$ **{{valor_bloqueado}}**, para imediato atendimento da demanda judicial.
 
 Em sentença, julgou-se o pedido parcialmente procedente. 
 
