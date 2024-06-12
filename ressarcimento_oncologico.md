@@ -238,17 +238,17 @@ Portanto, o valor atualizado que a União Federal deverá reaver ao Estado é no
 
 Por todo o exposto, o ESTADO DE RONDÔNIA requer:
 
-I – A citação da União Federal, na pessoa do Procurador-Chefe da Procuradoria da União no Estado de Rondônia para, querendo, contestar a presente ação;
+1. A citação da União Federal, na pessoa do Procurador-Chefe da Procuradoria da União no Estado de Rondônia para, querendo, contestar a presente ação;
 
-II – A designação de audiência preliminar de conciliação, nos termos do artigo 319, inciso VII, do CPC;
+1. A designação de audiência preliminar de conciliação, nos termos do artigo 319, inciso VII, do CPC;
 
-III – A condenação da União Federal ao reembolso ao Estado de Rondônia da quantia correspondente ao fornecimento de medicação oncológica, em razão de determinação judicial oriunda dos autos n. {{processo_origem}};
+1. A condenação da União Federal ao reembolso ao Estado de Rondônia da quantia correspondente ao fornecimento de medicação oncológica, em razão de determinação judicial oriunda dos autos n. {{processo_origem}};
 
-IV – A determinação de que o montante comprovadamente despendido sofra a incidência da correção monetária e juros legais cabíveis à verba a ser ressarcida, em obediência aos Temas 905 do STJ e 810 do STF, bem como fiquem fixados os termos *a quo* das respectivas incidências;
+1. A determinação de que o montante comprovadamente despendido sofra a incidência da correção monetária e juros legais cabíveis à verba a ser ressarcida, em obediência aos Temas 905 do STJ e 810 do STF, bem como fiquem fixados os termos *a quo* das respectivas incidências;
 
-V – A condenação da requerida nas custas e despesas processuais, bem como em honorários advocatícios, nos termos do artigo 85, § 3º, do CPC;
+1. A condenação da requerida nas custas e despesas processuais, bem como em honorários advocatícios, nos termos do artigo 85, § 3º, do CPC;
 
-VI – A análise dos dispositivos legais e constitucionais trazidos à baila, para fins de prequestionamento.
+1. A análise dos dispositivos legais e constitucionais trazidos à baila, para fins de prequestionamento.
 
 Protesta-se pela produção de provas por todos os meios permitidos em direito,  em especial, a juntada de novos documentos, caso necessários.
 
