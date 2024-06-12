@@ -57,44 +57,15 @@
 
         function renderMarkdown(markdown) {
           const html = converter.makeHtml(markdown);
+          const renderedContent = nunjucks.render("base-template.njk", {
+            renderedContent: html,
+          });
           const iframe =
             document.getElementById("iframe").contentWindow.document;
           iframe.open();
-          iframe.write(`
-        <html>
-          <head>
-            <style>
-              body {
-                font-family: Times New Roman, serif;
-                line-height: 1.6;
-                padding: 20px;
-                max-width: 800px;
-                margin: 0 auto;
-              }
-              h1 {
-                text-align: center;
-                margin-bottom: 30px;
-              }
-              p {
-                text-align: justify;
-              }
-              blockquote {
-                margin-top: 40px;
-                text-align: right;
-              }
-              .center {
-                text-align: center;
-              }
-            </style>
-          </head>
-          <body>
-            ${html}
-          </body>
-        </html>
-      `);
+          iframe.write(renderedContent);
           iframe.close();
         }
-
         function createDynamicForm(template) {
           dynamicParamsContainer.innerHTML = "";
           const nodes = nunjucks.parser.parse(template);
