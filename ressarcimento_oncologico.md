@@ -1,4 +1,4 @@
-# ![logo_pge](logo_pge.png)
+# ![Logotipo da PGE-RO](logo_pge.png =200x)
 
 **JUÍZO DA VARA FEDERAL CÍVEL (FAZENDA PÚBLICA) DA SEÇÃO JUDICIÁRIA DO ESTADO DE RONDÔNIA**
 
