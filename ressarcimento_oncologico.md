@@ -256,7 +256,7 @@ Dá-se à causa, para efeitos legais, o valor de R$ {{valor_da_causa}}.
 
 Data do sistema.
 
-{{nome_do_procurador}}
+{{nome_do_procurador}}<br>
 Procurador do Estado
 
 Documentos anexos:
