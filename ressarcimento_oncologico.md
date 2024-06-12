@@ -256,7 +256,7 @@ Dá-se à causa, para efeitos legais, o valor de R$ {{valor_da_causa}}.
 
 Data do sistema.
 
-Ígor Almeida da Silva Marinho
+{{nome_do_procurador}}
 Procurador do Estado
 
 Documentos anexos:
